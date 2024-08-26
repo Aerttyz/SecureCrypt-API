@@ -1,0 +1,6 @@
+@SecureCryptAPI_HostAddress = http://localhost:5218
+
+GET {{SecureCryptAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
