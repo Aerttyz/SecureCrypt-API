@@ -13,6 +13,7 @@ public class RSAController : ControllerBase
     private readonly Decrypt decrypt = new Decrypt();
 
     [HttpPost]
+    [Route("encrypt")]
     public ActionResult<string> PostMensage([FromBody] RSA request)
     {
         if (request.Message == null)
@@ -20,19 +21,19 @@ public class RSAController : ControllerBase
             return BadRequest("Message is required");
         }
         rsa.GenerateKeys();
-        List<int> encoded = rsa.Encoder(request.Message);
+        string encoded = rsa.EncoderToString(request.Message);
         return Ok(encoded);
     }
 
     [HttpPost]
     [Route("decrypt")]
-    public ActionResult<string> DecryptMessage([FromBody] List<int> request)
+    public ActionResult<string> DecryptMessage([FromBody] string request)
     {
         if (request == null)
         {
             return BadRequest("Message is required");
         }
-        string decoded = decrypt.Decoder(request);
+        string decoded = decrypt.DecoderFromString(request);
         return Ok(decoded);
     }
 }

@@ -18,6 +18,8 @@ namespace SecureCryptAPI.UseCase
 
         protected static Random random = new Random();
 
+        protected static int maxLength;
+
         public static int EncontrarEnesimoPrimo(int n)
         {
             if (n < 1)
