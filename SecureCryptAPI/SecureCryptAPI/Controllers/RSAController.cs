@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SecureCryptAPI.UseCase;
 using SecureCryptAPI.Models;
-using System.Numerics;
+
 
 namespace SecureCryptAPI.Controllers;
 
@@ -9,22 +9,30 @@ namespace SecureCryptAPI.Controllers;
 [Route("[controller]")]
 public class RSAController : ControllerBase
 {
-    private readonly GenereteRSA rsa = new GenereteRSA();
+    private readonly Encrypt rsa = new Encrypt();
+    private readonly Decrypt decrypt = new Decrypt();
 
     [HttpPost]
     public ActionResult<string> PostMensage([FromBody] RSA request)
     {
-        if (request == null) {
-
-            return BadRequest("Invalid request");
+        if (request.Message == null)
+        {
+            return BadRequest("Message is required");
         }
+        rsa.GenerateKeys();
+        List<int> encoded = rsa.Encoder(request.Message);
+        return Ok(encoded);
+    }
 
-
-        BigInteger e = BigInteger.Parse(request.E);
-        BigInteger n = BigInteger.Parse(request.N);
-        BigInteger plaintext = new BigInteger(System.Text.Encoding.UTF8.GetBytes(request.Mensage));
-
-        BigInteger encriptedMensage = rsa.Encrypt(plaintext, e, n);
-        return Ok(encriptedMensage.ToString());
+    [HttpPost]
+    [Route("decrypt")]
+    public ActionResult<string> DecryptMessage([FromBody] List<int> request)
+    {
+        if (request == null)
+        {
+            return BadRequest("Message is required");
+        }
+        string decoded = decrypt.Decoder(request);
+        return Ok(decoded);
     }
 }
